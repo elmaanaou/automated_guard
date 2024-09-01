@@ -31,9 +31,9 @@ sound3 = sound("alarm.mp3")
 
 ######################### global variables ############################################
 lock = trd.Lock()
-dtFlag = 0
+dtFlag = False
+mvFlag = False
 robber_face_position = []
-mvFlag = 0
 #########################################################################################
 
 
@@ -50,10 +50,6 @@ def behavior():
         if repeat == True and mvFlag==1:
             sound2.play()
             sound3.play()
-            lock.acquire()
-            dtFlag = 0
-            mvFlag = 0
-            lock.release()
 ###########################################################################################
 
 ########################## Mouvement detection ############################################
@@ -69,9 +65,9 @@ def mouvement_detection():
             deltax = (D1[0]-D0[0])**2
             deltay = (D1[1]-D0[1])**2
             if deltax>500 or deltay>500:
-                lock.acquire()
-                mvFlag=1
-                lock.release()
+                mvFlag=True
+            else:
+                mvFlag=False
 ###########################################################################################
 
 ############################### Robber detection ##########################################
@@ -93,9 +89,9 @@ def detection():
         cv2.imshow('Frames', frame)
         cv2.waitKey(1)
         if len(faces)>0:
-            lock.acquire()
-            dtFlag = 1
-            lock.release()
+            dtFlag = True
+        else:
+            dtFlag = False
 ###########################################################################################
 
 def main():
